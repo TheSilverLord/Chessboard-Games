@@ -1,8 +1,10 @@
+import java.awt.*;
+
 public class Corners
 {
     private Chessboard chessboard;
 
-    Corners()
+    Corners(Graphics g)
     {
         chessboard = new Chessboard();
         for(char a = 'a'; a <= 'c'; a++)
@@ -13,5 +15,7 @@ public class Corners
         {
             for (int i = 3; i >= 1; i--) chessboard.addChecker(new Checker(true, chessboard.getCell(a, i)));
         }
+
+        chessboard.paint(g);
     }
 }

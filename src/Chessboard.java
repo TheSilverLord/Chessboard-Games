@@ -12,6 +12,7 @@ public class Chessboard
     {
         private String col;
         private int row;
+        private static int size = 72;
 
         Cell(String column, int row)
         {
@@ -21,6 +22,7 @@ public class Chessboard
 
         String getCol(){ return col; }
         int getRow(){ return row; }
+        static int getSize(){ return size; }
     }
 
     private HashMap<String, Cell> cells;
@@ -42,9 +44,18 @@ public class Chessboard
 
         cells = new HashMap<>();
         cellCoord = new HashMap<>();
-        for(char a = 'a'; a != 'i'; a++)
+
+        int x = 38;
+        for(char a = 'a'; a <= 'h'; a++)
         {
-            for (int i = 1; i <= 8; i++) cells.put(String.valueOf(a) + i, new Cell(String.valueOf(a), i));
+            int y = 514;
+            for (int i = 1; i <= 8; i++)
+            {
+                cells.put(String.valueOf(a) + i, new Cell(String.valueOf(a), i));
+                cellCoord.put(String.valueOf(a) + i, new int[]{x, y});
+                y -= Cell.getSize();
+            }
+            x += Cell.getSize();
         }
 
         checkers = new Vector<>();
@@ -60,5 +71,12 @@ public class Chessboard
     public synchronized void paint(Graphics g)
     {
         g.drawImage(image, 0, 0, null);
+        for (Checker checker : checkers) {
+            String coord = null;
+            for (HashMap.Entry<String, Cell> entry : cells.entrySet()) {
+                if (entry.getValue().equals(checker.getCurrentCell())) coord = entry.getKey();
+            }
+            g.drawImage(checker.getImage(), cellCoord.get(coord)[0], cellCoord.get(coord)[1], null);
+        }
     }
 }

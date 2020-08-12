@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Checker
 {
     protected boolean white;
-    protected Chessboard.Cell currentCell;
+    private Chessboard.Cell currentCell;
     private BufferedImage image;
 
     Checker(boolean white, Chessboard.Cell currentCell)
@@ -25,6 +25,8 @@ public class Checker
             e.printStackTrace();
         }
     }
+
+    public Chessboard.Cell getCurrentCell() { return currentCell; }
 
     public BufferedImage getImage(){ return image; }
 

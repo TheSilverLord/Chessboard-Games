@@ -3,7 +3,7 @@ import java.util.Vector;
 
 public class Chessboard
 {
-    class Cell
+    static class Cell
     {
         private String col;
         private int row;
@@ -30,5 +30,16 @@ public class Chessboard
         }
 
         checkers = new Vector<>();
+    }
+
+    public Cell getCell(char col, int row)
+    {
+        return cells.get(String.valueOf(col) + row);
+    }
+
+    public synchronized void addChecker(Checker c){ checkers.add(c); }
+
+    public synchronized void paint()
+    {
     }
 }

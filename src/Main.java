@@ -20,6 +20,6 @@ public class Main
         frame.setResizable(false);
         frame.setVisible(true);
 
-        Corners game = new Corners(field.getGraphics());
+        Corners game = new Corners(field);
     }
 }

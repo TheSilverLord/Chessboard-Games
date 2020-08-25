@@ -14,12 +14,19 @@ public class Chessboard
         private int row;
         private static int size = 72;
         private boolean occupied;
+        private static BufferedImage backlight;
 
         Cell(String column, int row)
         {
             this.col = column;
             this.row = row;
             this.occupied = false;
+
+            try {
+                backlight = ImageIO.read(new File("./src/backlight.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         String getCol(){ return col; }
@@ -27,6 +34,7 @@ public class Chessboard
         static int getSize(){ return size; }
         public boolean isOccupied() { return occupied; }
         public void setOccupied(boolean occupied) { this.occupied = occupied; }
+        public static BufferedImage getBacklight() { return backlight; }
     }
 
     private HashMap<String, Cell> cells;
@@ -69,6 +77,9 @@ public class Chessboard
     {
         return cells.get(String.valueOf(col) + row);
     }
+
+    public HashMap<String, Cell> getCells() { return cells; }
+    public HashMap<String, int[]> getCellCoord() { return cellCoord; }
 
     public synchronized void addChecker(Checker c){ checkers.add(c); }
 

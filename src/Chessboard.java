@@ -13,16 +13,20 @@ public class Chessboard
         private String col;
         private int row;
         private static int size = 72;
+        private boolean occupied;
 
         Cell(String column, int row)
         {
             this.col = column;
             this.row = row;
+            this.occupied = false;
         }
 
         String getCol(){ return col; }
         int getRow(){ return row; }
         static int getSize(){ return size; }
+        public boolean isOccupied() { return occupied; }
+        public void setOccupied(boolean occupied) { this.occupied = occupied; }
     }
 
     private HashMap<String, Cell> cells;

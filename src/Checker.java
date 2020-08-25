@@ -13,6 +13,7 @@ public class Checker
     {
         this.white = white;
         this.currentCell = currentCell;
+        this.currentCell.setOccupied(true);
         try
         {
             if (white)
@@ -32,6 +33,13 @@ public class Checker
 
     public boolean move(Chessboard.Cell toCell)
     {
+        if (!toCell.isOccupied())
+        {
+            currentCell.setOccupied(false);
+            currentCell = toCell;
+            currentCell.setOccupied(true);
+            return true;
+        }
         return false;
     }
 }

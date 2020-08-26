@@ -10,13 +10,13 @@ public class Chessboard
 {
     static class Cell
     {
-        private String col;
+        private char col;
         private int row;
         private static int size = 72;
         private boolean occupied;
         private static BufferedImage backlight;
 
-        Cell(String column, int row)
+        Cell(char column, int row)
         {
             this.col = column;
             this.row = row;
@@ -29,7 +29,7 @@ public class Chessboard
             }
         }
 
-        String getCol(){ return col; }
+        char getCol(){ return col; }
         int getRow(){ return row; }
         static int getSize(){ return size; }
         public boolean isOccupied() { return occupied; }
@@ -63,7 +63,7 @@ public class Chessboard
             int y = 514;
             for (int i = 1; i <= 8; i++)
             {
-                cells.put(String.valueOf(a) + i, new Cell(String.valueOf(a), i));
+                cells.put(String.valueOf(a) + i, new Cell(a, i));
                 cellCoord.put(String.valueOf(a) + i, new int[]{x, y});
                 y -= Cell.getSize();
             }
@@ -80,6 +80,7 @@ public class Chessboard
 
     public HashMap<String, Cell> getCells() { return cells; }
     public HashMap<String, int[]> getCellCoord() { return cellCoord; }
+    public Vector<Checker> getCheckers() { return checkers; }
 
     public synchronized void addChecker(Checker c){ checkers.add(c); }
 

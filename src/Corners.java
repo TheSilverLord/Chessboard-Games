@@ -10,7 +10,7 @@ public class Corners
     private Chessboard chessboard;
     private Timer timer;
     private boolean clicked = false;
-    int blx, bly;
+    int blx, bly; // координаты подсвеченной клетки
     private String chosenCell;
 
     Corners(JPanel field)
@@ -48,17 +48,42 @@ public class Corners
                     {
                         int x = entry.getValue()[0];
                         int y = entry.getValue()[1];
-                        if (e.getX() >= x && e.getX() <= x + Chessboard.Cell.getSize() && e.getY() <= y && e.getY() >= y - Chessboard.Cell.getSize())
+                        if (e.getX() >= x && e.getX() <= x + Chessboard.Cell.getSize() && e.getY() - Chessboard.Cell.getSize() <= y && e.getY() - Chessboard.Cell.getSize() >= y - Chessboard.Cell.getSize())
                         {
                             blx = x;
-                            bly = y - Chessboard.Cell.getSize();
+                            bly = y;
                             chosenCell = entry.getKey();
+                            break;
                         }
                     }
                     clicked = true;
                 }
                 else
                 {
+                    String destination = null;
+                    for (HashMap.Entry<String, int[]> entry : chessboard.getCellCoord().entrySet())
+                    {
+                        int x = entry.getValue()[0];
+                        int y = entry.getValue()[1];
+                        if (e.getX() >= x && e.getX() <= x + Chessboard.Cell.getSize() && e.getY() - Chessboard.Cell.getSize() <= y && e.getY() - Chessboard.Cell.getSize() >= y - Chessboard.Cell.getSize())
+                        {
+                            destination = entry.getKey();
+                            break;
+                        }
+                    }
+                    Chessboard.Cell cC = chessboard.getCells().get(chosenCell);
+                    Chessboard.Cell dest = chessboard.getCells().get(destination);
+                    if (cC.getRow() == dest.getRow() &&  (cC.getCol() + 1 == dest.getCol() || cC.getCol() - 1 == dest.getCol()))
+                    {
+                        for (Checker checker : chessboard.getCheckers())
+                        {
+                            if (checker.getCurrentCell().equals(cC))
+                            {
+                                checker.move(dest);
+                                break;
+                            }
+                        }
+                    }
                     clicked = false;
                 }
             }

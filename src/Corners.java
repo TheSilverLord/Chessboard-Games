@@ -42,6 +42,7 @@ public class Corners
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
 
+                // поиск клетки, на которую кликнули, по координатам
                 if (!clicked)
                 {
                     for (HashMap.Entry<String, int[]> entry : chessboard.getCellCoord().entrySet())
@@ -73,7 +74,24 @@ public class Corners
                     }
                     Chessboard.Cell cC = chessboard.getCells().get(chosenCell);
                     Chessboard.Cell dest = chessboard.getCells().get(destination);
-                    if (cC.getRow() == dest.getRow() &&  (cC.getCol() + 1 == dest.getCol() || cC.getCol() - 1 == dest.getCol()))
+                    // движение на соседнюю клетку
+                    if ((cC.getRow() == dest.getRow() && (cC.getCol() + 1 == dest.getCol() || cC.getCol() - 1 == dest.getCol())) ||
+                            (cC.getCol() == dest.getCol() && (cC.getRow() + 1 == dest.getRow() || cC.getRow() - 1 == dest.getRow())))
+                    {
+                        for (Checker checker : chessboard.getCheckers())
+                        {
+                            if (checker.getCurrentCell().equals(cC))
+                            {
+                                checker.move(dest);
+                                break;
+                            }
+                        }
+                    }
+                    // движение через клетку (прыжок), если соседняя клетка занята
+                    if ((cC.getRow() == dest.getRow() && ((cC.getCol() + 2 == dest.getCol() && chessboard.getCell((char) (cC.getCol() + 1), cC.getRow()).isOccupied()) ||
+                            (cC.getCol() - 2 == dest.getCol() && chessboard.getCell((char) (cC.getCol() - 1), cC.getRow()).isOccupied()))) ||
+                            (cC.getCol() == dest.getCol() && ((cC.getRow() + 2 == dest.getRow() && chessboard.getCell(cC.getCol(), cC.getRow() + 1).isOccupied()) ||
+                            (cC.getRow() - 2 == dest.getRow() && chessboard.getCell(cC.getCol(), cC.getRow() - 1).isOccupied()))))
                     {
                         for (Checker checker : chessboard.getCheckers())
                         {

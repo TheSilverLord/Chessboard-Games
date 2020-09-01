@@ -14,12 +14,12 @@ public class Main
         JPanel controlPanel = new JPanel();
         Container container = frame.getContentPane();
 
-        container.add(controlPanel, BorderLayout.WEST);
+        container.add(controlPanel, BorderLayout.EAST);
         container.add(field, BorderLayout.CENTER);
         frame.pack();
         frame.setResizable(false);
         frame.setVisible(true);
 
-        Corners game = new Corners(field);
+        Corners game = new Corners(field, controlPanel);
     }
 }

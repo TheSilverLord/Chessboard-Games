@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Checker
 {
-    protected boolean white;
+    private boolean white;
     private Chessboard.Cell currentCell;
     private BufferedImage image;
 
@@ -30,6 +30,8 @@ public class Checker
     public Chessboard.Cell getCurrentCell() { return currentCell; }
 
     public BufferedImage getImage(){ return image; }
+
+    public boolean isWhite() { return white; }
 
     public boolean move(Chessboard.Cell toCell)
     {

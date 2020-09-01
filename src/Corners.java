@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -10,10 +11,12 @@ public class Corners
     private Chessboard chessboard;
     private Timer timer;
     private boolean clicked = false;
+    private boolean whiteTurn;
     int blx, bly; // координаты подсвеченной клетки
-    private String chosenCell;
+    private Chessboard.Cell chosenCell = null;
+    private Checker checker = null;
 
-    Corners(JPanel field)
+    Corners(JPanel field, JPanel controlPanel)
     {
         chessboard = new Chessboard();
         for(char a = 'a'; a <= 'c'; a++)
@@ -37,6 +40,16 @@ public class Corners
             }
         }, 1000, 1000);
 
+        whiteTurn = true;
+
+        JTextArea turn = new JTextArea();
+        turn.setFont(new Font("TimesRoman", Font.ITALIC, 20));
+        turn.setText("Ход белых");
+        turn.setEditable(false);
+        turn.setFocusable(false);
+
+        controlPanel.add(turn);
+
         field.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -53,11 +66,21 @@ public class Corners
                         {
                             blx = x;
                             bly = y;
-                            chosenCell = entry.getKey();
+                            chosenCell = chessboard.getCells().get(entry.getKey());
+                            if (chosenCell.isOccupied())
+                            {
+                                for (Checker c : chessboard.getCheckers())
+                                {
+                                    if (c.getCurrentCell().equals(chosenCell) && c.isWhite() == whiteTurn)
+                                    {
+                                        checker = c;
+                                        clicked = true;
+                                    }
+                                }
+                            }
                             break;
                         }
                     }
-                    clicked = true;
                 }
                 else
                 {
@@ -72,37 +95,33 @@ public class Corners
                             break;
                         }
                     }
-                    Chessboard.Cell cC = chessboard.getCells().get(chosenCell);
                     Chessboard.Cell dest = chessboard.getCells().get(destination);
+
                     // движение на соседнюю клетку
-                    if ((cC.getRow() == dest.getRow() && (cC.getCol() + 1 == dest.getCol() || cC.getCol() - 1 == dest.getCol())) ||
-                            (cC.getCol() == dest.getCol() && (cC.getRow() + 1 == dest.getRow() || cC.getRow() - 1 == dest.getRow())))
+                    if ((chosenCell.getRow() == dest.getRow() && (chosenCell.getCol() + 1 == dest.getCol() || chosenCell.getCol() - 1 == dest.getCol())) ||
+                            (chosenCell.getCol() == dest.getCol() && (chosenCell.getRow() + 1 == dest.getRow() || chosenCell.getRow() - 1 == dest.getRow())))
                     {
-                        for (Checker checker : chessboard.getCheckers())
-                        {
-                            if (checker.getCurrentCell().equals(cC))
-                            {
-                                checker.move(dest);
-                                break;
-                            }
-                        }
+                        if (checker.move(dest))
+                            whiteTurn = !whiteTurn;
                     }
+
                     // движение через клетку (прыжок), если соседняя клетка занята
-                    if ((cC.getRow() == dest.getRow() && ((cC.getCol() + 2 == dest.getCol() && chessboard.getCell((char) (cC.getCol() + 1), cC.getRow()).isOccupied()) ||
-                            (cC.getCol() - 2 == dest.getCol() && chessboard.getCell((char) (cC.getCol() - 1), cC.getRow()).isOccupied()))) ||
-                            (cC.getCol() == dest.getCol() && ((cC.getRow() + 2 == dest.getRow() && chessboard.getCell(cC.getCol(), cC.getRow() + 1).isOccupied()) ||
-                            (cC.getRow() - 2 == dest.getRow() && chessboard.getCell(cC.getCol(), cC.getRow() - 1).isOccupied()))))
+                    if ((chosenCell.getRow() == dest.getRow() && ((chosenCell.getCol() + 2 == dest.getCol() && chessboard.getCell((char) (chosenCell.getCol() + 1), chosenCell.getRow()).isOccupied()) ||
+                            (chosenCell.getCol() - 2 == dest.getCol() && chessboard.getCell((char) (chosenCell.getCol() - 1), chosenCell.getRow()).isOccupied()))) ||
+                            (chosenCell.getCol() == dest.getCol() && ((chosenCell.getRow() + 2 == dest.getRow() && chessboard.getCell(chosenCell.getCol(), chosenCell.getRow() + 1).isOccupied()) ||
+                            (chosenCell.getRow() - 2 == dest.getRow() && chessboard.getCell(chosenCell.getCol(), chosenCell.getRow() - 1).isOccupied()))))
                     {
-                        for (Checker checker : chessboard.getCheckers())
-                        {
-                            if (checker.getCurrentCell().equals(cC))
-                            {
-                                checker.move(dest);
-                                break;
-                            }
-                        }
+                        checker.move(dest);
+
+                        if (!((chessboard.getCell((char) (dest.getCol() + 1), dest.getRow()).isOccupied() && !(dest.getCol() + 2 == chosenCell.getCol())) ||
+                                (chessboard.getCell((char) (dest.getCol() - 1), dest.getRow()).isOccupied() && !(dest.getCol() - 2 == chosenCell.getCol())) ||
+                                (chessboard.getCell(dest.getCol(), dest.getRow() + 1).isOccupied() && !(dest.getRow() + 2 == chosenCell.getRow())) ||
+                                (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow())))) whiteTurn = !whiteTurn;
                     }
                     clicked = false;
+
+                    if (whiteTurn) turn.setText("Ход белых");
+                    else turn.setText("Ход чёрных");
                 }
             }
         });

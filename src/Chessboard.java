@@ -41,6 +41,7 @@ public class Chessboard
     private HashMap<String, int[]> cellCoord;
     private Vector<Checker> checkers;
     private static BufferedImage image;
+    BufferedImage fieldImage;
 
     Chessboard()
     {
@@ -84,15 +85,20 @@ public class Chessboard
 
     public synchronized void addChecker(Checker c){ checkers.add(c); }
 
-    public synchronized void paint(Graphics g)
+    public synchronized void paint(Graphics g, int width, int height)
     {
-        g.drawImage(image, 0, 0, null);
-        for (Checker checker : checkers) {
+        //Двойная буфферизация в BufferedImage (устранение мерцания)
+        fieldImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics fieldImageGraphics = fieldImage.getGraphics();
+        fieldImageGraphics.drawImage(image, 0, 0, width, height, null);
+        for (Checker checker : checkers)
+        {
             String coord = null;
             for (HashMap.Entry<String, Cell> entry : cells.entrySet()) {
                 if (entry.getValue().equals(checker.getCurrentCell())) coord = entry.getKey();
             }
-            g.drawImage(checker.getImage(), cellCoord.get(coord)[0], cellCoord.get(coord)[1], null);
+            fieldImageGraphics.drawImage(checker.getImage(), cellCoord.get(coord)[0], cellCoord.get(coord)[1], null);
         }
+        g.drawImage(fieldImage, 0, 0, width, height, null);
     }
 }

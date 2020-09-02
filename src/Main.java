@@ -5,12 +5,15 @@ public class Main
 {
     public static void main(String[] args)
     {
-        int width = 1600;
-        int height = 900;
+        int width = 875;
+        int height = 660;
         JFrame frame = new JFrame("Corners");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(width, height));
         JPanel field = new JPanel();
+        field.setSize(625, 625);
+        field.setMaximumSize(new Dimension(625, 625));
+        field.setMinimumSize(new Dimension( 625, 625));
         JPanel controlPanel = new JPanel();
         Container container = frame.getContentPane();
 

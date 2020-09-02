@@ -31,7 +31,7 @@ public class Corners
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                chessboard.paint(field.getGraphics());
+                chessboard.paint(field.getGraphics(), field.getMinimumSize().width, field.getMinimumSize().height);
                 if (clicked)
                 {
                     field.getGraphics().drawImage(Chessboard.Cell.getBacklight(), blx, bly, null);

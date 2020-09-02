@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -41,14 +40,6 @@ public class Corners
         }, 1000, 1000);
 
         whiteTurn = true;
-
-        JTextArea turn = new JTextArea();
-        turn.setFont(new Font("TimesRoman", Font.ITALIC, 20));
-        turn.setText("Ход белых");
-        turn.setEditable(false);
-        turn.setFocusable(false);
-
-        controlPanel.add(turn);
 
         field.addMouseListener(new MouseAdapter() {
             @Override
@@ -116,14 +107,25 @@ public class Corners
                         if (!((chessboard.getCell((char) (dest.getCol() + 1), dest.getRow()).isOccupied() && !(dest.getCol() + 2 == chosenCell.getCol())) ||
                                 (chessboard.getCell((char) (dest.getCol() - 1), dest.getRow()).isOccupied() && !(dest.getCol() - 2 == chosenCell.getCol())) ||
                                 (chessboard.getCell(dest.getCol(), dest.getRow() + 1).isOccupied() && !(dest.getRow() + 2 == chosenCell.getRow())) ||
-                                (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow())))) whiteTurn = !whiteTurn;
+                                (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow()))))
+                        {
+                            whiteTurn = !whiteTurn;
+                            controlPanel.getComponent(1).setEnabled(false);
+                        }
+                        else controlPanel.getComponent(1).setEnabled(true);
                     }
                     clicked = false;
 
-                    if (whiteTurn) turn.setText("Ход белых");
-                    else turn.setText("Ход чёрных");
+                    if (whiteTurn) ((JTextArea)(controlPanel.getComponent(0))).setText("Ход белых");
+                    else ((JTextArea)(controlPanel.getComponent(0))).setText("Ход чёрных");
                 }
             }
         });
+    }
+
+    public boolean endTurn()
+    {
+        whiteTurn = !whiteTurn;
+        return whiteTurn;
     }
 }

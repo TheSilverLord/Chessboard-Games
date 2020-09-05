@@ -11,6 +11,8 @@ public class Corners
     private Timer timer;
     private boolean clicked = false;
     private boolean whiteTurn;
+    private boolean whiteVictory;
+    private boolean blackVictory;
     int blx, bly; // координаты подсвеченной клетки
     private Chessboard.Cell chosenCell = null;
     private Checker checker = null;
@@ -116,8 +118,48 @@ public class Corners
                     }
                     clicked = false;
 
+                    //проверка на победу
+                    if (whiteTurn)
+                    {
+                        int i = 0;
+                        for (Checker c : chessboard.getCheckers())
+                        {
+                            if (!c.isWhite())
+                            {
+                                if (c.getCurrentCell().getCol() < 'f') break;
+                                else if (c.getCurrentCell().getRow() > 3) break;
+                                else i++;
+                            }
+                        }
+                        if (i == 9) blackVictory = true;
+                    }
+                    else
+                    {
+                        int i = 0;
+                        for (Checker c : chessboard.getCheckers())
+                        {
+                            if (c.isWhite())
+                            {
+                                if (c.getCurrentCell().getCol() > 'c') break;
+                                else if (c.getCurrentCell().getRow() < 6) break;
+                                else i++;
+                            }
+                        }
+                        if (i == 9) whiteVictory = true;
+                    }
+
                     if (whiteTurn) ((JTextArea)(controlPanel.getComponent(0))).setText("Ход белых");
                     else ((JTextArea)(controlPanel.getComponent(0))).setText("Ход чёрных");
+                    if (whiteVictory)
+                    {
+                        ((JTextArea)(controlPanel.getComponent(0))).setText("Победа белых");
+                        timer.cancel();
+                    }
+                    else if (blackVictory)
+                    {
+                        ((JTextArea)(controlPanel.getComponent(0))).setText("Победа чёрных");
+                        timer.cancel();
+                    }
                 }
             }
         });

@@ -39,7 +39,7 @@ public class Corners
                     field.getGraphics().drawImage(Chessboard.Cell.getBacklight(), blx, bly, null);
                 }
             }
-        }, 1000, 1000);
+        }, 500, 500);
 
         whiteTurn = true;
 
@@ -106,10 +106,10 @@ public class Corners
                     {
                         checker.move(dest);
 
-                        if (!((chessboard.getCell((char) (dest.getCol() + 1), dest.getRow()).isOccupied() && !(dest.getCol() + 2 == chosenCell.getCol())) ||
-                                (chessboard.getCell((char) (dest.getCol() - 1), dest.getRow()).isOccupied() && !(dest.getCol() - 2 == chosenCell.getCol())) ||
-                                (chessboard.getCell(dest.getCol(), dest.getRow() + 1).isOccupied() && !(dest.getRow() + 2 == chosenCell.getRow())) ||
-                                (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow()))))
+                        if (!((chessboard.getCell((char) (dest.getCol() + 1), dest.getRow()).isOccupied() && !(dest.getCol() + 2 == chosenCell.getCol()) && !(chessboard.getCell((char) (dest.getCol() + 2), dest.getRow()).isOccupied())) ||
+                                (chessboard.getCell((char) (dest.getCol() - 1), dest.getRow()).isOccupied() && !(dest.getCol() - 2 == chosenCell.getCol()) && !(chessboard.getCell((char) (dest.getCol() - 2), dest.getRow()).isOccupied())) ||
+                                (chessboard.getCell(dest.getCol(), dest.getRow() + 1).isOccupied() && !(dest.getRow() + 2 == chosenCell.getRow()) && !(chessboard.getCell(dest.getCol(), dest.getRow() + 2).isOccupied())) ||
+                                (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow()) && !(chessboard.getCell(dest.getCol(), dest.getRow() - 2).isOccupied()))))
                         {
                             whiteTurn = !whiteTurn;
                             controlPanel.getComponent(1).setEnabled(false);
@@ -154,11 +154,13 @@ public class Corners
                     {
                         ((JTextArea)(controlPanel.getComponent(0))).setText("Победа белых");
                         timer.cancel();
+                        chessboard.paint(field.getGraphics(), field.getMinimumSize().width, field.getMinimumSize().height);
                     }
                     else if (blackVictory)
                     {
                         ((JTextArea)(controlPanel.getComponent(0))).setText("Победа чёрных");
                         timer.cancel();
+                        chessboard.paint(field.getGraphics(), field.getMinimumSize().width, field.getMinimumSize().height);
                     }
                 }
             }

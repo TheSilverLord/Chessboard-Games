@@ -10,6 +10,7 @@ public class Corners
     private Chessboard chessboard;
     private Timer timer;
     private boolean clicked = false;
+    private boolean jumping = false;
     private boolean whiteTurn;
     private boolean whiteVictory;
     private boolean blackVictory;
@@ -90,12 +91,15 @@ public class Corners
                     }
                     Chessboard.Cell dest = chessboard.getCells().get(destination);
 
-                    // движение на соседнюю клетку
-                    if ((chosenCell.getRow() == dest.getRow() && (chosenCell.getCol() + 1 == dest.getCol() || chosenCell.getCol() - 1 == dest.getCol())) ||
-                            (chosenCell.getCol() == dest.getCol() && (chosenCell.getRow() + 1 == dest.getRow() || chosenCell.getRow() - 1 == dest.getRow())))
+                    if (!jumping) // если не происходит повторного прыжка
                     {
-                        if (checker.move(dest))
-                            whiteTurn = !whiteTurn;
+                        // движение на соседнюю клетку
+                        if ((chosenCell.getRow() == dest.getRow() && (chosenCell.getCol() + 1 == dest.getCol() || chosenCell.getCol() - 1 == dest.getCol())) ||
+                                (chosenCell.getCol() == dest.getCol() && (chosenCell.getRow() + 1 == dest.getRow() || chosenCell.getRow() - 1 == dest.getRow())))
+                        {
+                            if (checker.move(dest))
+                                whiteTurn = !whiteTurn;
+                        }
                     }
 
                     // движение через клетку (прыжок), если соседняя клетка занята
@@ -111,12 +115,22 @@ public class Corners
                                 (chessboard.getCell(dest.getCol(), dest.getRow() + 1).isOccupied() && !(dest.getRow() + 2 == chosenCell.getRow()) && !(chessboard.getCell(dest.getCol(), dest.getRow() + 2).isOccupied())) ||
                                 (chessboard.getCell(dest.getCol(), dest.getRow() - 1).isOccupied() && !(dest.getRow() - 2 == chosenCell.getRow()) && !(chessboard.getCell(dest.getCol(), dest.getRow() - 2).isOccupied()))))
                         {
+                            jumping = false;
                             whiteTurn = !whiteTurn;
                             controlPanel.getComponent(1).setEnabled(false);
                         }
-                        else controlPanel.getComponent(1).setEnabled(true);
+                        else
+                        {
+                            jumping = true;
+                            chosenCell = dest;
+                            int[] m = chessboard.getCellCoord().get(String.valueOf(chosenCell.getCol()) + chosenCell.getRow());
+                            blx = m[0];
+                            bly = m[1];
+                            controlPanel.getComponent(1).setEnabled(true);
+                        }
                     }
-                    clicked = false;
+
+                    if (!jumping) clicked = false;
 
                     //проверка на победу
                     if (whiteTurn)
@@ -170,6 +184,7 @@ public class Corners
     public boolean endTurn()
     {
         whiteTurn = !whiteTurn;
+        jumping = false;
         return whiteTurn;
     }
 }

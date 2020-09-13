@@ -91,7 +91,7 @@ class ClientHandler extends Thread
                     for (ClientHandler ch : Server.clients)
                         if (ch.name.equals(request.receiver))
                         {
-                            outputStream.writeObject(request);
+                            ch.outputStream.writeObject(request);
                             System.out.println("Data pack was sent");
                             break;
                         }

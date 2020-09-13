@@ -22,6 +22,7 @@ public class Corners
     int blx, bly; // координаты подсвеченной клетки
     private Chessboard.Cell chosenCell = null;
     private Checker checker = null;
+    private String source = null;
     private String destination = null;
 
     String host = "localhost";
@@ -96,10 +97,14 @@ public class Corners
                     else if (request.operationID == 2)
                     {
                         clients.remove(request.data);
+                        JTextArea clientsTA = (JTextArea)(controlPanel.getComponent(3));
+                        clientsTA.setText("");
                         for (String c : clients)
                         {
-                            JTextArea clientsTA = (JTextArea)(controlPanel.getComponent(3));
-                            clientsTA.append(c + '\n');
+                            if (!c.equals(name))
+                            {
+                                clientsTA.append(c + '\n');
+                            }
                         }
                     }
                     else if (request.operationID == 3)
@@ -155,7 +160,8 @@ public class Corners
                             {
                                 blx = x;
                                 bly = y;
-                                chosenCell = chessboard.getCells().get(entry.getKey());
+                                source = entry.getKey();
+                                chosenCell = chessboard.getCells().get(source);
                                 if (chosenCell.isOccupied())
                                 {
                                     for (Checker c : chessboard.getCheckers())
@@ -220,7 +226,7 @@ public class Corners
                             {
                                 jumping = false;
                                 try {
-                                    oos.writeObject(new Request(3, new DataPack(String.valueOf(chosenCell.getCol()) + chosenCell.getRow(), destination), opponent));
+                                    oos.writeObject(new Request(3, new DataPack(source, destination), opponent));
                                 } catch (IOException ex) {
                                     ex.printStackTrace();
                                 }
